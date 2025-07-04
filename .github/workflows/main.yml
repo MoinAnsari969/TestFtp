@@ -29,9 +29,19 @@ jobs:
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             set ssl:verify-certificate no;
-            mkdir -p -f /pub;
+            mkdir -p /pub;
             chmod 777 /pub;
-            mkdir -p -f /pub/${{ env.BACKUP_FOLDER }};
+            mkdir -p /pub/${{ env.BACKUP_FOLDER }};
+            chmod 777 /pub/${{ env.BACKUP_FOLDER }};
+            bye
+          "
+      - name: Wait for backup folder creation
+        run: sleep 10
+
+      - name: Mirror /pub to backup folder, excluding backup folders
+        run: |
+          lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
+            set ssl:verify-certificate no;
             mirror --verbose --exclude-glob pub/backup_* /pub /pub/${{ env.BACKUP_FOLDER }};
             bye
           "
