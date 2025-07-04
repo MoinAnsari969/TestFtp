@@ -21,7 +21,7 @@ jobs:
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             mkdir -p /${{ env.BACKUP_FOLDER }};
-            mirror --reverse --delete --verbose /api/ /${{ env.BACKUP_FOLDER }};
+            mirror --reverse --delete --verbose ./api/ /${{ env.BACKUP_FOLDER }};
             bye
           "
 
