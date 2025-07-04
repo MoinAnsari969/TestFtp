@@ -20,7 +20,8 @@ jobs:
       - name: Backup existing /pub/example folder on FTP server to /${{ env.BACKUP_FOLDER }}
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
-            mkdir -p /${{ env.BACKUP_FOLDER }};
+            set ssl:verify-certificate no;
+            mkdir -p /pub/${{ env.BACKUP_FOLDER }};
             mirror --reverse --delete --verbose / /pub/${{ env.BACKUP_FOLDER }};
             bye
           "
@@ -28,6 +29,7 @@ jobs:
       - name: Deploy latest build to /pub folder on FTP server
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
+            set ssl:verify-certificate no;
             mirror --reverse --delete --verbose ./ ./pub/example/;
             bye
           "
