@@ -15,26 +15,26 @@ jobs:
 
       - name: Set backup folder name with date
         id: set_backup
-        run: echo "BACKUP_FOLDER=backup_api_$(date +'%Y%m%d')" >> $GITHUB_ENV
+        run: echo "BACKUP_FOLDER=backup_$(date +'%Y%m%d')" >> $GITHUB_ENV
 
-      - name: Ensure /api folder exists on FTP server
+      - name: Ensure /pub folder exists on FTP server
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
-            mkdir -p /api;
+            mkdir -p /pub;
             bye
           "
 
-      - name: Backup existing /api folder on FTP server to /${{ env.BACKUP_FOLDER }}
+      - name: Backup existing /pub folder on FTP server to /${{ env.BACKUP_FOLDER }}
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             mkdir -p /${{ env.BACKUP_FOLDER }};
-            mirror --reverse --delete --verbose /api /${{ env.BACKUP_FOLDER }};
+            mirror --reverse --delete --verbose /pub /${{ env.BACKUP_FOLDER }};
             bye
           "
 
-      - name: Deploy latest build to /api folder on FTP server
+      - name: Deploy latest build to /pub folder on FTP server
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
-            mirror --reverse --delete --verbose ./ ./api/;
+            mirror --reverse --delete --verbose ./ ./pub/;
             bye
           "
