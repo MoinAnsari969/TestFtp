@@ -31,8 +31,8 @@ jobs:
             set ssl:verify-certificate no;
             mkdir -p /pub || echo 'Directory /pub already exists or cannot be created';
             mkdir -p /pub/${{ env.BACKUP_FOLDER }} || { echo 'Cannot create backup folder, skipping backup' && exit 0; }
-            chmod 777 /pub;
-            chmod 777 /pub/${{ env.BACKUP_FOLDER }};
+            site chmod 777 /pub;
+            site chmod 777 /pub/${{ env.BACKUP_FOLDER }};
             bye
           "
       - name: Wait for backup folder creation
