@@ -13,13 +13,13 @@ jobs:
       - name: Install lftp
         run: sudo apt-get install lftp
 
-      - name: List all directories in root folder of FTP server
-        run: |
-          lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
-            set ssl:verify-certificate no;
-            cls -l;
-            bye
-          "
+      # - name: List all directories in root folder of FTP server
+      #   run: |
+      #     lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
+      #       set ssl:verify-certificate no;
+      #       cls -l;
+      #       bye
+      #     "
 
       - name: Set backup folder name with date
         id: set_backup
