@@ -25,12 +25,12 @@ jobs:
         id: set_backup
         run: echo "BACKUP_FOLDER=backup_$(date +'%Y%m%d')" >> $GITHUB_ENV
 
-      - name: Backup existing /pub/example folder on FTP server to /${{ env.BACKUP_FOLDER }}
+      - name: Backup existing /pub folder on FTP server to /backup_YYYYMMDD, excluding backup folders
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             set ssl:verify-certificate no;
-            mkdir -p /pub/${{ env.BACKUP_FOLDER }};
-            mirror --reverse --delete --verbose /pub /pub/${{ env.BACKUP_FOLDER }};
+            mkdir -p /pub/backup_${{ env.BACKUP_FOLDER }};
+            mirror --verbose --exclude-glob backup_* /pub /pub/backup_${{ env.BACKUP_FOLDER }};
             bye
           "
 
@@ -38,6 +38,6 @@ jobs:
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             set ssl:verify-certificate no;
-            mirror --reverse --delete --verbose ./ ./pub/example/;
+            mirror --reverse --delete --verbose ./ ./pub/;
             bye
           "
