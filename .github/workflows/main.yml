@@ -17,24 +17,17 @@ jobs:
         id: set_backup
         run: echo "BACKUP_FOLDER=backup_$(date +'%Y%m%d')" >> $GITHUB_ENV
 
-      - name: Ensure /pub folder exists on FTP server
-        run: |
-          lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
-            mkdir -p /pub;
-            bye
-          "
-
-      - name: Backup existing /pub folder on FTP server to /${{ env.BACKUP_FOLDER }}
+      - name: Backup existing /pub/example folder on FTP server to /${{ env.BACKUP_FOLDER }}
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             mkdir -p /${{ env.BACKUP_FOLDER }};
-            mirror --reverse --delete --verbose /pub /${{ env.BACKUP_FOLDER }};
+            mirror --reverse --delete --verbose ./pub/example /pub/example/${{ env.BACKUP_FOLDER }};
             bye
           "
 
       - name: Deploy latest build to /pub folder on FTP server
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
-            mirror --reverse --delete --verbose ./ ./pub/;
+            mirror --reverse --delete --verbose ./ ./pub/example/;
             bye
           "
