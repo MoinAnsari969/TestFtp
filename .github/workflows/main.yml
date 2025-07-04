@@ -30,6 +30,7 @@ jobs:
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             set ssl:verify-certificate no;
             mkdir -p /pub/${{ env.BACKUP_FOLDER }};
+            chmod 777 /pub/${{ env.BACKUP_FOLDER }};
             mirror --verbose --exclude-glob pub/backup_* /pub /pub/${{ env.BACKUP_FOLDER }};
             bye
           "
