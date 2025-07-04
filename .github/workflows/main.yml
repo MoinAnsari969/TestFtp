@@ -1,2 +1,33 @@
 name: build and deploy
 on:
+  push:
+    branches:
+      - main
+jobs:
+  backup-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install lftp
+        run: sudo apt-get install lftp
+
+      - name: Set backup folder name with date
+        id: set_backup
+        run: echo "BACKUP_FOLDER=backup_$(date +'%Y%m%d')" >> $GITHUB_ENV
+
+      - name: Backup existing files on FTP server to /backup folder with date
+        run: |
+          lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
+            mkdir -p /${{ env.BACKUP_FOLDER }};
+            mirror --reverse --delete --verbose /api/ /${{ env.BACKUP_FOLDER }};
+            bye
+          "
+
+      - name: Deploy latest build to FTP server
+        run: |
+          lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
+            mirror --reverse --delete --verbose ./ ./api/;
+            bye
+          "
