@@ -22,9 +22,13 @@ jobs:
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             set ssl:verify-certificate no;            
-            mirror --verbose --exclude-glob backup /pub ./backup/${{ env.BACKUP_FOLDER }};
+            mirror --verbose --exclude backup /pub ./backup/${{ env.BACKUP_FOLDER }};
             bye
           "
+
+      - name: List downloaded backup files
+        run: ls -R ./backup/${{ env.BACKUP_FOLDER }}
+
 
       - name: Upload backup to FTP server as dated backup folder
         run: |
