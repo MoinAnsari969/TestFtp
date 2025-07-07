@@ -22,7 +22,15 @@ jobs:
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             set ssl:verify-certificate no;            
-            mirror --verbose --exclude website_backup /pub ./website_backup/${{ env.BACKUP_FOLDER }};
+            mirror --verbose --exclude backup /pub ./backup/${{ env.BACKUP_FOLDER }};
+            bye
+          "
+
+      - name: Download /pub folder from FTP server to runner
+        run: |
+          lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
+            set ssl:verify-certificate no;            
+            mirror --verbose  /pub/backup ./backup;
             bye
           "
 
@@ -30,16 +38,16 @@ jobs:
         run: ls -R ./
 
 
-      - name: Upload backup to FTP server as dated backup folder
-        run: |
-          lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
-            set ssl:verify-certificate no;
-            set cmd:trace true;
-            set xfer:clobber on;
-            mkdir -p /website_backup/${{ env.BACKUP_FOLDER }} || { echo 'Cannot create backup folder, skipping backup' && exit 0; }
-            mirror --reverse --verbose ./website_backup/${{ env.BACKUP_FOLDER }} /website_backup/${{ env.BACKUP_FOLDER }};
-            bye
-          "
+      # - name: Upload backup to FTP server as dated backup folder
+      #   run: |
+      #     lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
+      #       set ssl:verify-certificate no;
+      #       set cmd:trace true;
+      #       set xfer:clobber on;
+      #       mkdir -p /pub/backup/${{ env.BACKUP_FOLDER }} || { echo 'Cannot create backup folder, skipping backup' && exit 0; }
+      #       mirror --reverse --verbose ./backup/${{ env.BACKUP_FOLDER }} /pub/backup/${{ env.BACKUP_FOLDER }};
+      #       bye
+      #     "
 
       - name: Deploy latest build to /pub folder on FTP server
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -54,5 +62,5 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
-            website_backup/**
+            backup/**
             web.config
