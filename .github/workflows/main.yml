@@ -16,7 +16,7 @@ jobs:
 
       - name: Set backup folder name with date
         id: set_backup
-        run: echo "BACKUP_FOLDER=backup_$(date +'%Y%m%d')" >> $GITHUB_ENV
+        run: echo "BACKUP_FOLDER=backup_$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
      
       - name: Download /pub folder from FTP server to runner
         run: |
