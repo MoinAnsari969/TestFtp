@@ -48,7 +48,6 @@ jobs:
           local-dir: ./
           server-dir: ./pub/
           protocol: ftp
-          dry-run: true
           # exclude: |
           #   **/.git*
           #   **/.git*/**
