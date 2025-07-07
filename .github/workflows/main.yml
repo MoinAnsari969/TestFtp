@@ -48,8 +48,9 @@ jobs:
           local-dir: ./
           server-dir: ./pub/
           protocol: ftp
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            backup/**
+          dry-run: true
+          # exclude: |
+          #   **/.git*
+          #   **/.git*/**
+          #   **/node_modules/**
+          #   backup/**
