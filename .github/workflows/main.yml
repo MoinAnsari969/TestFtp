@@ -62,5 +62,5 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
-            backup/**
+            # backup/**
             web.config
