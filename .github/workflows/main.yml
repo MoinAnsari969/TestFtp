@@ -38,7 +38,7 @@ jobs:
             set xfer:clobber on;
             mkdir -p /backup/${{ env.BACKUP_FOLDER }} || { echo 'Cannot create backup folder, skipping backup' && exit 0; }
             ls /backup;
-            mirror --reverse --verbose ./backup/${{ env.BACKUP_FOLDER }} /backup/${{ env.BACKUP_FOLDER }};
+            mirror --reverse --verbose ./backup/${{ env.BACKUP_FOLDER }} backup/${{ env.BACKUP_FOLDER }};
             bye
           "
 
@@ -55,5 +55,5 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
+            backup/**
             web.config
-            # backup/**
