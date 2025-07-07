@@ -40,12 +40,6 @@ jobs:
           "
 
       - name: Deploy latest build to /pub folder on FTP server
-        # run: |
-        #   lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
-        #     set ssl:verify-certificate no;
-        #     mirror --reverse --delete --verbose ./ ./pub/;
-        #     bye
-        #   "
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -54,3 +48,8 @@ jobs:
           local-dir: ./
           server-dir: ./pub/
           protocol: ftp
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            backup/**
