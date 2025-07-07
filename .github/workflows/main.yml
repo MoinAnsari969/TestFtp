@@ -35,7 +35,7 @@ jobs:
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             set ssl:verify-certificate no;
             mkdir -p ./backup/${{ env.BACKUP_FOLDER }} || { echo 'Cannot create backup folder, skipping backup' && exit 0; }
-            mirror --reverse --verbose ./backup/${{ env.BACKUP_FOLDER }} /backup/${{ env.BACKUP_FOLDER }};
+            mirror --reverse --verbose ./backup/${{ env.BACKUP_FOLDER }}/ /backup/${{ env.BACKUP_FOLDER }}/;
             bye
           "
 
