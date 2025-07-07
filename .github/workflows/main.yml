@@ -50,15 +50,22 @@ jobs:
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             set ssl:verify-certificate no;
             mkdir -p /pub/${{ env.BACKUP_FOLDER }} || { echo 'Cannot create backup folder, skipping backup' && exit 0; }
-            chmod 777 /pub/${{ env.BACKUP_FOLDER }};
             mirror --reverse --verbose ./pub_backup /pub/${{ env.BACKUP_FOLDER }};
             bye
           "
 
       - name: Deploy latest build to /pub folder on FTP server
-        run: |
-          lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
-            set ssl:verify-certificate no;
-            mirror --reverse --delete --verbose ./ ./pub/;
-            bye
-          "
+        # run: |
+        #   lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
+        #     set ssl:verify-certificate no;
+        #     mirror --reverse --delete --verbose ./ ./pub/;
+        #     bye
+        #   "
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: ./pub/
+          protocol: ftp
