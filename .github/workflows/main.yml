@@ -22,7 +22,7 @@ jobs:
         run: |
           lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }} -e "
             set ssl:verify-certificate no;            
-            mirror --verbose --exclude-glob pub/backup_* /pub ./${{ env.BACKUP_FOLDER }};
+            mirror --verbose --exclude-glob /pub/backup_* /pub ./${{ env.BACKUP_FOLDER }};
             bye
           "
 
